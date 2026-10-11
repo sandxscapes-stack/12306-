@@ -1,0 +1,74 @@
+1，数据结构的选取：普通队列一直往后排，前面空出来的位置用不上，会“假溢出”，所以需要用循环队列，
+注意判空条件：(q.rear+1)%maxsize==q.front,队空：front == rear,指针移动(q.front+1)%maxsize;
+2.操作过程，order来判断执行的是命令1，还是....,Dequeue出队,Enqueue入队，用q来存储余票（注意要加在while循环之后哟！！！）
+放票时：新票 k 加上余票 p 一起发，发剩的重新存回 p，来新人时：一旦有新人入队，立刻检查 p > 0？如果有余票，当场发给刚排队的新人。
+3.用了c++的&运算来简化c语言的*q，和string，q->front...；typedef 重命名，
+  代码展示：
+#include<bits/stdc++.h>
+#define maxsize 1000
+using namespace std;
+
+typedef struct {
+	string s;
+	string name;
+	string id;
+}ElemType;
+typedef struct {
+	 ElemType data[maxsize];
+	 int front,rear;
+}Queue;
+void InitQueue(Queue &q){
+	q.front =q.rear=0;
+}
+bool EnQueue(Queue &q){
+	int n;
+	cin>>n;
+	for(int i=0;i<n;i++){
+		if((q.rear+1)%maxsize==q.front)return false;
+		cin>>q.data[q.rear].s>>q.data[q.rear].name>>q.data[q.rear].id;
+		q.rear=(q.rear+1)%maxsize;
+	
+	}
+	return true;
+}
+int DeQueue(Queue &q,int k){
+	while(k>0&&q.front!=q.rear){
+		k--;
+		cout<<q.data[q.front].s<<" "<<q.data[q.front].name<<" "<<q.data[q.front].id<<endl;
+		q.front=(q.front+1)%maxsize;
+	}
+	if(k>0){
+		cout<<"a bit of k";
+	return k;}
+	else
+	if(q.front==q.rear){
+		cout<<"empty";
+	return 0;}
+	else {
+		cout<<"full";
+return 0;}
+}
+int main(){
+	Queue q;
+	InitQueue(q);
+
+	int order;	
+	int p=0,k=0;
+	while(1){
+	cin>>order;
+	if(order==1){
+		EnQueue(q);
+		if(p>0){
+			p=DeQueue(q,p);	
+		}
+	}else
+	if(order==2){
+	cin>>k;
+	k+=p;
+	p=DeQueue(q,k);
+		
+	}else
+	 if(order==4)break;
+	 }
+	return 0;
+}
